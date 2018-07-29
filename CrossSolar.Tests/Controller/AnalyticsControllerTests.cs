@@ -101,7 +101,6 @@ namespace CrossSolar.Tests.Controller
             //Arrange
             var panelID = "XXXX1111YYYY2222";
             _panelRepositoryMock.Setup(m => m.GetPanelBySerial(panelID)).Returns(Task.FromResult(GetListPanel().Where(p => p.Serial == panelID).FirstOrDefault()));
-                //(GetListPanel().Where(p => p.Serial == panelID).FirstOrDefault());
 
             _analyticsRepositoryMock.Setup(m => m.ReturnOneHourElectricity(panelID)).Returns(Task.FromResult(GetListOneHourElectricity()));
 
@@ -158,5 +157,21 @@ namespace CrossSolar.Tests.Controller
 
 
 
+        [Fact]
+        public async Task GetPowerPanelOutPutNullTest()
+        {
+            //Arrange
+            var panelID = "XXXX1111YYYY2222";
+            _panelRepositoryMock.Setup(m => m.GetPanelBySerial(panelID)).Returns(Task.FromResult<Panel>(null));            
+
+            //Act
+            var result = await _analyticsController.Get(panelID);
+
+            // Assert
+            Assert.NotNull(result);
+
+            var objectResult = result as NotFoundResult;
+            Assert.NotNull(objectResult);
+        }
     }
 }

@@ -27,43 +27,22 @@ namespace CrossSolar.Tests.Repository
 
 
         [Fact]
-        public async Task test_get()
+        public async Task testGetById()
         {
-
             // Arrange
             List<Panel> panels = new List<Panel>();
-            _crossSolarDbContextMock.Setup(m => m.FindAsync<Panel>(1)).Returns(Task.FromResult<Panel>(new Panel { Id = 1 }));
+            _crossSolarDbContextMock.Setup(m => m.FindAsync<Panel>(1)).Returns(Task.FromResult(new Panel { Id = 1 }));
 
             // Act
             var result = _panelRepository.GetAsync("1");
 
             // Assert
             Assert.NotNull(result);
-
-
             Assert.Equal(1, result.Id);
         }
 
         [Fact]
-        public async Task update_query()
-        {
-
-            // Arrange
-            List<Panel> panels = new List<Panel>();
-            _crossSolarDbContextMock.Setup(m => m.FindAsync<Panel>(1)).Returns(Task.FromResult<Panel>(new Panel { Id = 1 }));
-
-            // Act
-            var result = _panelRepository.GetAsync("1");
-
-            // Assert
-            Assert.NotNull(result);
-
-
-            Assert.Equal(1, result.Id);
-        }
-
-        [Fact]
-        public async Task insert_query()
+        public async Task testInsert()
         {
             var panel = new Panel
             {
