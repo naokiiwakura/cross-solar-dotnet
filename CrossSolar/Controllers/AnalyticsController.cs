@@ -27,13 +27,11 @@ namespace CrossSolar.Controllers
         [HttpGet("{banelId}/[controller]")]
         public async Task<IActionResult> Get([FromRoute] string panelId)
         {
-            var panel = await _panelRepository.Query()
-                .FirstOrDefaultAsync(x => x.Serial.Equals(panelId, StringComparison.CurrentCultureIgnoreCase));
+            var panel = await _panelRepository.GetPanelBySerial(panelId);
 
             if (panel == null) return NotFound();
 
-            var analytics = await _analyticsRepository.Query()
-                .Where(x => x.PanelId.Equals(panelId, StringComparison.CurrentCultureIgnoreCase)).ToListAsync();
+            var analytics = await _analyticsRepository.ReturnOneHourElectricity(panelId);
 
             var result = new OneHourElectricityListModel
             {
@@ -52,21 +50,7 @@ namespace CrossSolar.Controllers
         [HttpGet("{panelId}/[controller]/day")]
         public async Task<IActionResult> DayResults([FromRoute] string panelId)
         {
-            var result = new List<OneDayElectricityModel>();
-
-
-            result = await (from ana in _analyticsRepository.Query()
-                .Where(x => x.PanelId.Equals(panelId, StringComparison.CurrentCultureIgnoreCase))
-                            group ana by new { y = ana.DateTime.Year, m = ana.DateTime.Month, d = ana.DateTime.Day } into g
-                            select new OneDayElectricityModel
-                            {
-                                Sum = g.Sum(x => x.KiloWatt),
-                                Average = g.Average(x => x.KiloWatt),
-                                Maximum = g.Max(x => x.KiloWatt),
-                                Minimum = g.Min(x => x.KiloWatt),
-                                DateTime = g.FirstOrDefault().DateTime.Date
-                            }).ToListAsync();
-
+            var result = await _analyticsRepository.DayResults(panelId);
             return Ok(result);
         }
 

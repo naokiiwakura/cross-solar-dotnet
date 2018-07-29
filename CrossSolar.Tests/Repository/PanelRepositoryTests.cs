@@ -84,24 +84,5 @@ namespace CrossSolar.Tests.Repository
 
             Assert.Equal(typeof(Panel), panel.GetType());
         }
-
-        //[Fact]
-        //public async Task Test_query()
-        //{
-
-        //    // Arrange
-        //    List<Panel> panels = new List<Panel>();
-        //    _crossSolarDbContextMock.Setup(m => m.Set<Panel>().AsQueryable().Where(It.IsAny<Expression<Func<Panel, bool>>>())).Returns(panels.AsQueryable());       
-
-        //    // Act
-        //    var result = _panelRepository.Query();
-
-        //    // Assert
-        //    Assert.NotNull(result);
-
-        //    var createdResult = result as CreatedResult;
-        //    Assert.NotNull(createdResult);
-        //    Assert.Equal(201, createdResult.StatusCode);
-        //}
     }
 }
