@@ -51,7 +51,19 @@ namespace CrossSolar.Controllers
         public async Task<IActionResult> DayResults([FromRoute] string panelId)
         {
             var result = await _analyticsRepository.DayResults(panelId);
-            return Ok(result);
+
+
+            var formatData = (from ana in result group ana by new { y = ana.DateTime.Year, m = ana.DateTime.Month, d = ana.DateTime.Day } into g
+                                    select new OneDayElectricityModel
+                                    {
+                                        Sum = g.Sum(x => x.KiloWatt),
+                                        Average = g.Average(x => x.KiloWatt),
+                                        Maximum = g.Max(x => x.KiloWatt),
+                                        Minimum = g.Min(x => x.KiloWatt),
+                                        DateTime = g.FirstOrDefault().DateTime.Date
+                                    }).ToList();
+
+            return Ok(formatData);
         }
 
         // POST panel/XXXX1111YYYY2222/analytics

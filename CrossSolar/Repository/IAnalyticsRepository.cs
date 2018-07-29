@@ -7,6 +7,6 @@ namespace CrossSolar.Repository
     public interface IAnalyticsRepository : IGenericRepository<OneHourElectricity>
     {
         Task<List<OneHourElectricity>> ReturnOneHourElectricity(string serial);
-        Task<List<OneDayElectricityModel>> DayResults(string panelId);
+        Task<List<OneHourElectricity>> DayResults(string panelId);
     }
 }

@@ -120,39 +120,81 @@ namespace CrossSolar.Tests.Controller
         #region mock data for DayResultsTests
 
 
-        private List<OneDayElectricityModel> GetListOneHourElectricityModel()
+        private List<OneHourElectricity> GetListOneHourElectricityAggregate()
         {
-            var ohem = new List<OneDayElectricityModel>();
-            ohem.Add(new OneDayElectricityModel()
-            {
-                Sum = 2000,
-                Average = 17,
-                Maximum = 30,
-                Minimum = 0,
-                DateTime = new DateTime(2010, 12, 31)
-            });
-            return ohem;
+            var ohe = new List<OneHourElectricity>() {
+                new OneHourElectricity()
+                {
+                    Id = 3,
+                    PanelId =  "XXXX1111YYYY2222",
+                    DateTime = new DateTime(2018, 7, 6),
+                    KiloWatt = 100
+                },
+                new OneHourElectricity()
+                {
+                    Id = 4,
+                    PanelId =  "XXXX1111YYYY2222",
+                    DateTime = new DateTime(2018, 7, 6),
+                    KiloWatt = 200
+                },
+                new OneHourElectricity()
+                {
+                    Id = 5,
+                    PanelId =  "XXXX1111YYYY2222",
+                    DateTime = new DateTime(2018, 7, 6),
+                    KiloWatt = 300
+                },
+                new OneHourElectricity()
+                {
+                    Id = 3,
+                    PanelId =  "XXXX1111YYYY2222",
+                    DateTime = new DateTime(2018, 7, 7),
+                    KiloWatt = 200
+                },
+                new OneHourElectricity()
+                {
+                    Id = 4,
+                    PanelId =  "XXXX1111YYYY2222",
+                    DateTime = new DateTime(2018, 7, 7),
+                    KiloWatt = 400
+                },
+                new OneHourElectricity()
+                {
+                    Id = 5,
+                    PanelId =  "XXXX1111YYYY2222",
+                    DateTime = new DateTime(2018, 7, 7),
+                    KiloWatt = 600
+                }
+            };
+            return ohe;
         }
 
         #endregion
 
-        [Fact]
-        public async Task DayResultsTests()
+        [Theory]
+        [InlineData(6, 600,200,300,100)]
+        [InlineData(7, 1200, 400, 600, 200)]
+        public async Task DayResultsTests(int day, int sum, int average, int maximun, int minimum)
         {
             var panelID = "XXXX1111YYYY2222";
-            _analyticsRepositoryMock.Setup(m => m.DayResults(panelID)).Returns(Task.FromResult(GetListOneHourElectricityModel().ToList()));
+            _analyticsRepositoryMock.Setup(m => m.DayResults(panelID)).Returns(Task.FromResult(GetListOneHourElectricityAggregate().ToList()));
 
             //Act
             var result = await _analyticsController.DayResults(panelID);
 
             // Assert
-            Assert.NotNull(result);
+            Assert.NotNull(result);            
 
             var objectResult = result as OkObjectResult;
             Assert.NotNull(objectResult);
 
             var content = objectResult.Value as List<OneDayElectricityModel>;
             Assert.NotNull(content);
+
+            Assert.Equal(sum, content.Where(p => p.DateTime == new DateTime(2018, 7, day)).FirstOrDefault().Sum);
+            Assert.Equal(average, content.Where(p => p.DateTime == new DateTime(2018, 7, day)).FirstOrDefault().Average);
+            Assert.Equal(maximun, content.Where(p => p.DateTime == new DateTime(2018, 7, day)).FirstOrDefault().Maximum);
+            Assert.Equal(minimum, content.Where(p => p.DateTime == new DateTime(2018, 7, day)).FirstOrDefault().Minimum);
         }
 
 

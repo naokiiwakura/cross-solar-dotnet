@@ -19,19 +19,18 @@ namespace CrossSolar.Repository
             return await _dbContext.OneHourElectricitys.Where(x => x.PanelId.Equals(serial, StringComparison.CurrentCultureIgnoreCase)).ToListAsync();                
         }
 
-        public async Task<List<OneDayElectricityModel>> DayResults(string panelId)
+        public async Task<List<OneHourElectricity>> DayResults(string panelId)
         {
-            return await(from ana in _dbContext.OneHourElectricitys
-               .Where(x => x.PanelId.Equals(panelId, StringComparison.CurrentCultureIgnoreCase))
-                           group ana by new { y = ana.DateTime.Year, m = ana.DateTime.Month, d = ana.DateTime.Day } into g
-                           select new OneDayElectricityModel
-                           {
-                               Sum = g.Sum(x => x.KiloWatt),
-                               Average = g.Average(x => x.KiloWatt),
-                               Maximum = g.Max(x => x.KiloWatt),
-                               Minimum = g.Min(x => x.KiloWatt),
-                               DateTime = g.FirstOrDefault().DateTime.Date
-                           }).ToListAsync();
+            return await _dbContext.OneHourElectricitys.Where(x => x.PanelId.Equals(panelId, StringComparison.CurrentCultureIgnoreCase)).ToListAsync();
+                           //group ana by new { y = ana.DateTime.Year, m = ana.DateTime.Month, d = ana.DateTime.Day } into g
+                           //select new OneDayElectricityModel
+                           //{
+                           //    Sum = g.Sum(x => x.KiloWatt),
+                           //    Average = g.Average(x => x.KiloWatt),
+                           //    Maximum = g.Max(x => x.KiloWatt),
+                           //    Minimum = g.Min(x => x.KiloWatt),
+                           //    DateTime = g.FirstOrDefault().DateTime.Date
+                           //}).ToListAsync();
         }
     }
 }

@@ -16,14 +16,13 @@ namespace CrossSolar.Tests.Repository
 {
     public class PanelRepositoryTests
     {
+        private readonly PanelRepository _panelRepository;
+        private readonly Mock<CrossSolarDbContext> _crossSolarDbContextMock = new Mock<CrossSolarDbContext>();
+
         public PanelRepositoryTests()
         {
             _panelRepository = new PanelRepository(_crossSolarDbContextMock.Object);
-        }
-
-        private readonly PanelRepository _panelRepository;
-
-        private readonly Mock<CrossSolarDbContext> _crossSolarDbContextMock = new Mock<CrossSolarDbContext>();
+        }      
 
 
         [Fact]
